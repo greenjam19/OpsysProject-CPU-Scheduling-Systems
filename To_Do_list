@@ -1,1 +1,7 @@
-
+- Build class for autmoating the process of generating numbers for arrival time, number of bursts, cpu bursts, and I/O bursts for any given process (Id'd by A-Z)
+- Build function for simulating FCFS
+- Build function for simulating SJF
+- Build function for simulating SRT 
+- Build function for simulating RR
+- build function for formatting output
+  
