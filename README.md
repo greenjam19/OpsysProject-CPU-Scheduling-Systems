@@ -2,7 +2,7 @@
 
 Implementation of CPU scheduling
 
-## Author
+## Authors
 
 * Jamarri Green (greenj19)
 * Shane Stoll (stolls)
