@@ -11,4 +11,7 @@ Implementation of CPU scheduling
 ## Getting Started
 
 ### Dependencies
+
 * We used Python 3.8
+
+
