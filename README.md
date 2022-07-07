@@ -1,1 +1,14 @@
-# OpsysProject-CPU-Scheduling-Systems
+# CSCI 4210 - Simulation Project
+
+Implementation of CPU scheduling
+
+## Author
+
+* Jamarri Green (greenj19)
+* Shane Stoll (stolls)
+* Noah Cussatti (cussan)
+
+## Getting Started
+
+### Dependencies
+* We used Python 3.8
