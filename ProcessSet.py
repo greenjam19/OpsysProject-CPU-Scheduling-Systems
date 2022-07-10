@@ -1,5 +1,6 @@
 import math
 import sys
+
 class Rand48(object):
     def __init__(self, seed):
         self.n = seed
