@@ -83,15 +83,23 @@ class ProcessSet(object):
             print("--> CPU burst ", self.CPU_bursts[i][self.no_bursts[i]-1], "ms", sep="")            
         return self.arr_time, self.CPU_bursts, self.IO_bursts, self.no_bursts
     
+    #Will need for SRT and SJF
     def get_tau(self):
         return self.tau
-
+    
+    #May be needed for "something"
     def set_tau(self, val):
         self.tau = val
 
 if __name__ == "__main__":
     "Tester code"
-    numProc, seed_no, lambda_, upp_bound, cont_switch, alpha, t_slice  = int(sys.argv[1]), int(sys.argv[2]), float(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), float(sys.argv[6]), int(sys.argv[7])
+    numProc      = int(sys.argv[1])   # Number of processes 
+    seed_no      =  int(sys.argv[2])  # random seed number for Rand48
+    lambda_      = float(sys.argv[3]) # needed for get_exp
+    upp_bound    = int(sys.argv[4])   # upper bound for get_exp validity
+    cont_switch  = int(sys.argv[5])   # context switch time
+    alpha        = float(sys.argv[6]) # needed for SJF and SRT
+    t_slice      = int(sys.argv[7])   # needed for Round Robin
     
     processes = ProcessSet(numProc,lambda_,seed_no, upp_bound)
     processes.generate()

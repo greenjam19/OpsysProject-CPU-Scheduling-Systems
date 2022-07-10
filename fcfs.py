@@ -1,4 +1,5 @@
 import sys
+from copy import deepcopy 
 from ProcessSet import *
 
 def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
@@ -31,9 +32,9 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
     in_burst = False
     
     #? Copies of parameters
-    arr_time = arr_time_p
-    CPU_bursts = CPU_bursts_p
-    IO_bursts = IO_bursts_p
+    arr_time = deepcopy(arr_time_p)
+    CPU_bursts = deepcopy(CPU_bursts_p)
+    IO_bursts = deepcopy(IO_bursts_p)
 
     # First print
     print("\ntime ", current_time, "ms: Simulator started for FCFS [Q: empty]", sep="")
