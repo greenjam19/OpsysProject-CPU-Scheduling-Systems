@@ -20,8 +20,7 @@ class Rand48(object):
             n -= 1 << 32
         return n  
 
-class ProcessSet(object):
-   
+class ProcessSet(object):   
     def __init__(self, numProc, lambda_, seed_no, upp_bound):
         #number of processes
         self.numProc = numProc
@@ -77,11 +76,10 @@ class ProcessSet(object):
     def print_(self):
         # print process CPU and I/O times in correct format
         for i in range(self.numProc):
-            print("Process ",chr(65+i),": arrival time ",self.arr_time[i],"ms; tau ",self.tau,"ms; ", self.no_bursts[i]," CPU bursts:",sep="")
+            print("Process ", chr(65+i), ": arrival time ", self.arr_time[i], "ms; tau ", self.tau, "ms; ", self.no_bursts[i], " CPU bursts:", sep="")
             for j in range(self.no_bursts[i]-1):
-                print("--> CPU burst ", self.CPU_bursts[i][j],"ms --> I/O burst ",self.IO_bursts[i][j],"ms",sep="")
-            print("--> CPU burst ", self.CPU_bursts[i][self.no_bursts[i]-1],"ms",sep="")
-            
+                print("--> CPU burst ", self.CPU_bursts[i][j], "ms --> I/O burst ", self.IO_bursts[i][j], "ms", sep="")
+            print("--> CPU burst ", self.CPU_bursts[i][self.no_bursts[i]-1], "ms", sep="")            
         return self.arr_time, self.CPU_bursts, self.IO_bursts, self.no_bursts
     
     def get_tau(self):
