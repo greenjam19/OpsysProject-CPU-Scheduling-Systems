@@ -78,10 +78,8 @@ class ProcessSet(object):
         # print process CPU and I/O times in correct format
         for i in range(self.numProc):
             print("Process ",chr(65+i),": arrival time ",self.arr_time[i],"ms; tau ",self.tau,"ms; ", self.no_bursts[i]," CPU bursts:",sep="")
-            
             for j in range(self.no_bursts[i]-1):
                 print("--> CPU burst ", self.CPU_bursts[i][j],"ms --> I/O burst ",self.IO_bursts[i][j],"ms",sep="")
-                
             print("--> CPU burst ", self.CPU_bursts[i][self.no_bursts[i]-1],"ms",sep="")
             
         return self.arr_time, self.CPU_bursts, self.IO_bursts, self.no_bursts
