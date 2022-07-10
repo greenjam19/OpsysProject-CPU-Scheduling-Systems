@@ -6,6 +6,11 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
     """ 
     First Come First Serve Algorithm
 
+    Description:
+    The FCFS algorithm is a non-preemptive algorithm in which processes simply line up in the ready
+    queue, waiting to use the CPU. This is your baseline algorithm (and could be implemented as RR
+    with an “infinite” time slice).
+
     Args:
         num_procs (int): The number of processes
         arr_time_p (int[]): List of arrival times for every process

@@ -4,6 +4,10 @@ from ProcessSet import ProcessSet
 from fcfs import FCFS
 
 def main():
+    if (len(sys.argv) != 8):
+        print("ERROR: Insufficient number of arguments")
+        return 1
+
     numProc = int(sys.argv[1])
     seed_no = int(sys.argv[2])
     lambda_ = float(sys.argv[3])
