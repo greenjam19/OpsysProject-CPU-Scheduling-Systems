@@ -19,8 +19,13 @@ def main():
     # numProc, arr_times, CPU_bursts, IO_bursts, no_bursts, cont_switch
     FCFS(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch)
     # insert SJF here
+    # SJF()
+    # 
     # insert SRT here
+    # SRT(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, alpha, processes.get_tau())
+    # 
     # insert RR here
+    # RR()
 
     # Write file writing code for averages
 
