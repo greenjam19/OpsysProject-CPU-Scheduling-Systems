@@ -1,6 +1,6 @@
 import sys
 import math
-from ProcessSet import Rand48, ProcessSet
+from ProcessSet import ProcessSet
 from fcfs import FCFS
 
 def main():
@@ -12,7 +12,7 @@ def main():
     alpha = float(sys.argv[6])
     t_slice = int(sys.argv[7])
 
-    processes = ProcessSet(numProc,lambda_,seed_no, upp_bound)
+    processes = ProcessSet(numProc, lambda_, seed_no, upp_bound)
     processes.generate()
     arr_times, CPU_bursts, IO_bursts, no_bursts = processes.print_()
     
