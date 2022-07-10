@@ -47,7 +47,7 @@ class ProcessSet(object):
     #the current seed divided by the given lambda
     def get_exp(self):
         val = -math.log(self.rand.drand())/self.lambda_
-        while val>self.upp_bound:
+        while val > self.upp_bound:
             val = -math.log(self.rand.drand())/self.lambda_
         return val
     
