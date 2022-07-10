@@ -2,7 +2,8 @@ import sys
 from ProcessSet import *
 
 def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
-    """ First Come First Serve Algorithm
+    """ 
+    First Come First Serve Algorithm
 
     Args:
         num_procs (int): The number of processes
@@ -27,9 +28,8 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
     wait_time_3 = 0
 
     #* Flags
-    add_time = True
     in_burst = False
-
+    
     #? Copies of parameters
     arr_time = arr_time_p
     CPU_bursts = CPU_bursts_p
@@ -40,7 +40,7 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
     # While loop keeps going until all processes done
     while (True):
-        #* Check if anything in arr_time is still there, if so check if at or past that arrive time, print out and pop from arr_time, and add to queue
+        #* Check if anything in arr_time is still there, if so check if at or past that arrive time, print out from arr_time, and add to queue
         if (len(arr_time) != 0):
             for i in range(len(arr_time)):
                 if (current_time == arr_time[i]):
@@ -48,16 +48,16 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
                     print("time ", current_time, "ms: Process ", chr(65 + i), " arrived; added to ready queue [Q: ", sep='', end='')
                     print(*queue, end='')
                     print("]")
+                    # make integer division with //
                     wait_time = int(cont_switch_time / 2)
 
         #* Checks if we can start using a CPU burst
-        if (len(queue) != 0 and in_burst == False and wait_time == 0 and wait_time_2 == 0 and wait_time_3 == 0):
+        if (len(queue) != 0 and in_burst == False and wait_time == wait_time_2 == wait_time_3 == 0):
             current_proc = queue[0]
             proc_idx = ord(current_proc) - 65
             queue.pop(0)
             if (len(queue) == 0):
                 print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
-
             else:
                 print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
                 print(*queue, end='')
@@ -122,11 +122,9 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
         if (wait_time_3 != 0):
             wait_time_3 -= 1
 
-        #? Checking if we should add the time at the end of the loop
-        if (add_time == True):
-            current_time += 1
-        else:
-            add_time = True
+        #* Increment the current_time at the end of the loop
+        current_time += 1
+        
 
     # Final print statement
     print("time ", current_time, "ms: Simulator ended for FCFS [Q: empty]", sep='')

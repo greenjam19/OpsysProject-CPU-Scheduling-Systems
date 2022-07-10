@@ -16,7 +16,8 @@ def main():
     processes.generate()
     arr_times, CPU_bursts, IO_bursts, no_bursts = processes.print_()
     
-    FCFS(numProc, arr_times, CPU_bursts, IO_bursts, no_bursts, cont_switch)
+    # numProc, arr_times, CPU_bursts, IO_bursts, no_bursts, cont_switch
+    FCFS(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch)
     # insert SJF here
     # insert SRT here
     # insert RR here
