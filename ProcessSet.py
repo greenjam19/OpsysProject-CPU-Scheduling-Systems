@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul  7 15:50:39 2022
-
-@author: greenj19
-"""
 import math
 import sys
 class Rand48(object):
@@ -81,7 +75,7 @@ class ProcessSet(object):
             self.CPU_bursts[i].append(math.ceil(self.get_exp()))
             
     def print_(self):
-        
+        # print process CPU and I/O times in correct format
         for i in range(self.numProc):
             print("Process ",chr(65+i),": arrival time ",self.arr_time[i],"ms; tau ",self.tau,"ms; ", self.no_bursts[i]," CPU bursts:",sep="")
             
@@ -94,9 +88,9 @@ class ProcessSet(object):
     
     def get_tau(self):
         return self.tau
-    def set_tau(self,val):
+
+    def set_tau(self, val):
         self.tau = val
-            
 
 if __name__ == "__main__":
     "Tester code"
@@ -109,17 +103,3 @@ if __name__ == "__main__":
     print("lists of CPU bursts:",CPU_bursts)
     print("lists of I/O bursts:",IO_bursts)
     print("list of amounts of CPU bursts:",no_bursts)
-    
-            
-            
-        
-        
-    
-
-
-
-
-
-
-
-
