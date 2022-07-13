@@ -1,3 +1,9 @@
+"""
+@File   : FCFS.py
+@Author : Noah Cussatti (cussan)
+@Course : CSCI-4210; Operating Systems
+"""
+
 import sys
 from copy import deepcopy 
 from ProcessSet import *
@@ -19,6 +25,8 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
         cont_switch_time (int): The context switch time
     """
 
+    #TODO: Count the context switches
+
     #* Variables to keep track of time and processes
     current_time = 0
     completed_procs = 0
@@ -35,7 +43,7 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
     #* Flags
     in_burst = False
-    
+
     #? Copies of parameters
     arr_time = deepcopy(arr_time_p)
     CPU_bursts = deepcopy(CPU_bursts_p)
@@ -130,7 +138,7 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
         #* Increment the current_time at the end of the loop
         current_time += 1
-        
+
 
     # Final print statement
     print("time ", current_time, "ms: Simulator ended for FCFS [Q: empty]", sep='')
