@@ -1,8 +1,8 @@
-- Build class for automating the process of generating and outputting numbers for arrival times, number of bursts, cpu bursts, I/O bursts, and tau given values for the number of processes, 
-lambda, and random seed number
+- Build class for automating the process of generating and outputting numbers for arrival times, number of bursts, cpu bursts, I/O bursts, and tau given values
+for the number of processes, lambda, and random seed number (DONE)
 
-- Build function for simulating FCFS (Done)
-- Build function for simulating SJF
-- Build function for simulating SRT 
-- Build function for simulating RR
-- build function for formatting FINAL output
+- Build function for simulating FCFS (DONE)
+- Build function for simulating SJF (DONE)
+- Build function for simulating SRT (IN PROGRESS)
+- Build function for simulating RR (DONE)
+- build function for formatting FINAL output (IN PROGRESS)
