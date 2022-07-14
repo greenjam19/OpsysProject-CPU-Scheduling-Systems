@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul 10 17:57:12 2022
-
-@author: greenj19
-"""
-
 import sys
 from ProcessSet import ProcessSet
 from copy import deepcopy
@@ -85,13 +78,11 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
                         runn_proc = queue[0]
                         in_processor = True
     
-
                     print("time ", current_time, "ms: Process ", chr(65 + i), " (tau ", tau[0], "ms)", " arrived; added to ready queue [Q: ", sep='', end='')
                     print(*queue, end='')
                     print("]")
                     wait_time = cont_switch_time //2
     #! *******************************************SPECIFIC TO SJF and SRT*****************************************END
-
 
         #* Checks if we can start using a CPU burst
         if len(queue) != 0 and in_burst == False and wait_time == wait_time_2 == wait_time_3 == 0:
@@ -158,8 +149,6 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
                     tau_ = tau[proc_idx]
                     
                     print("time ", current_time, "ms: Recalculated tau for process ", current_proc, ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: empty]", sep='')
-    
-
 
                     print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
 
