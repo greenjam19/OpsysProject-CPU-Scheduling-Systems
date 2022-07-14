@@ -2,6 +2,8 @@ import sys
 import math
 from ProcessSet import ProcessSet
 from fcfs import FCFS
+from sjf import SJF
+from rr import RR
 
 def main():
     if (len(sys.argv) != 8):
@@ -23,13 +25,14 @@ def main():
     # numProc, arr_times, CPU_bursts, IO_bursts, no_bursts, cont_switch
     FCFS(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch)
     # insert SJF here
-    # SJF()
+    tau_inits = [processes.get_tau() for i in range(numProc)]
+    SJF(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
     # 
     # insert SRT here
-    # SRT(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, alpha, processes.get_tau())
+    # SRT(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
     # 
     # insert RR here
-    # RR()
+    RR(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, t_slice)
 
     # Write file writing code for averages
 
