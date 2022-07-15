@@ -9,6 +9,10 @@ from Stats import Stats
 import sys
 
 def main():
+        if (len(sys.argv) != 8):
+                print("ERROR: Insufficient number of arguments")
+                return 1
+
         num_procs= int(sys.argv[1])
         seed_no = int(sys.argv[2])
         lambda_ = float(sys.argv[3])
