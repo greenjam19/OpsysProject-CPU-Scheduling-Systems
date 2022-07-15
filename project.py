@@ -1,40 +1,34 @@
+from ProcessSet import *
+from FCFS import FCFS
+from SJF import SJF
+from RR import RR
+#TODO finish this
+#from SRT import SRT
+#TODO finish this
+from Stats import Stats
 import sys
-import math
-from ProcessSet import ProcessSet
-from fcfs import FCFS
-from sjf import SJF
-from rr import RR
 
 def main():
-    if (len(sys.argv) != 8):
-        print("ERROR: Insufficient number of arguments")
-        return 1
+        num_procs= int(sys.argv[1])
+        seed_no = int(sys.argv[2])
+        lambda_ = float(sys.argv[3])
+        upp_bound = int(sys.argv[4])
+        cont_switch = int(sys.argv[5])
+        alpha = float(sys.argv[6])
+        t_slice  = int(sys.argv[7])
+        
+        processes = ProcessSet(num_procs,lambda_,seed_no, upp_bound)
+        processes.generate()
+        arr_time, CPU_bursts, IO_bursts, no_bursts = processes.print_()
 
-    numProc = int(sys.argv[1])
-    seed_no = int(sys.argv[2])
-    lambda_ = float(sys.argv[3])
-    upp_bound = int(sys.argv[4])
-    cont_switch = int(sys.argv[5])
-    alpha = float(sys.argv[6])
-    t_slice = int(sys.argv[7])
+        tau_inits = [processes.get_tau() for i in range(num_procs)]
 
-    processes = ProcessSet(numProc, lambda_, seed_no, upp_bound)
-    processes.generate()
-    arr_times, CPU_bursts, IO_bursts, no_bursts = processes.print_()
-    
-    # numProc, arr_times, CPU_bursts, IO_bursts, no_bursts, cont_switch
-    FCFS(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch)
-    # insert SJF here
-    tau_inits = [processes.get_tau() for i in range(numProc)]
-    SJF(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
-    # 
-    # insert SRT here
-    # SRT(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
-    # 
-    # insert RR here
-    RR(numProc, arr_times, CPU_bursts, IO_bursts, cont_switch, t_slice)
-
-    # Write file writing code for averages
+        FCFS(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch)
+        SJF(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
+        #SRT(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
+        RR(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, t_slice)
+        #Stats(output1, output2, output3, output4)
+        Stats()
 
 if __name__ == "__main__":
     main()

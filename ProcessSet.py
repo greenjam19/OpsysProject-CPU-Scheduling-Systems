@@ -1,6 +1,16 @@
 import math
 import sys
 
+import sys, os
+
+# Disable all print()'s
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+
+# Restore all print()'s
+def enablePrint():
+    sys.stdout = sys.__stdout__
+
 class Rand48(object):
     def __init__(self, seed):
         self.n = seed
