@@ -3,7 +3,7 @@ from FCFS import FCFS
 from SJF import SJF
 from RR import RR
 #TODO finish this
-#from SRT import SRT
+from SRT import SRT
 #TODO finish this
 from Stats import Stats
 import sys
@@ -23,10 +23,10 @@ def main():
 
         tau_inits = [processes.get_tau() for i in range(num_procs)]
 
-        FCFS(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch)
-        SJF(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
-        #SRT(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
-        RR(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, t_slice)
+        #FCFS(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch)
+        #SJF(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
+        SRT(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
+        #RR(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, t_slice)
         #Stats(output1, output2, output3, output4)
         Stats()
 

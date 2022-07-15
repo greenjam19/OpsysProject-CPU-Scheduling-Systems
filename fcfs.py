@@ -1,9 +1,3 @@
-"""
-@File   : FCFS.py
-@Author : Noah Cussatti (cussan)
-@Course : CSCI-4210; Operating Systems
-"""
-
 import sys
 from copy import deepcopy 
 from ProcessSet import *
@@ -25,8 +19,6 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
         cont_switch_time (int): The context switch time
     """
 
-    #TODO: Count the context switches
-
     #* Variables to keep track of time and processes
     current_time = 0
     completed_procs = 0
@@ -43,7 +35,7 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
     #* Flags
     in_burst = False
-
+    
     #? Copies of parameters
     arr_time = deepcopy(arr_time_p)
     CPU_bursts = deepcopy(CPU_bursts_p)
@@ -54,6 +46,9 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
     # While loop keeps going until all processes done
     while (True):
+        #!block all printing for any times of 1000ms or greater
+        if(current_time>999):
+            blockPrint()
         #* Check if anything in arr_time is still there, if so check if at or past that arrive time, print out from arr_time, and add to queue
         if (len(arr_time) != 0):
             for i in range(len(arr_time)):
@@ -103,12 +98,16 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
                     print(*queue, end='')
                     print("]")
             else:
+                #!enable printing for termination clauses
+                enablePrint()
                 if (len(queue) == 0):
                     print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: empty]", sep='')
                 else:
                     print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: ", sep='', end='')
                     print(*queue, end='')
                     print("]")
+                #!reblock printing after termination clauses
+                blockPrint()
                 completed_procs += 1
             wait_time_2 = cont_switch_time
 
@@ -138,16 +137,15 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
         #* Increment the current_time at the end of the loop
         current_time += 1
-
+        
 
     # Final print statement
+    #!enable printing for Simulator ending clause
+    enablePrint()
     print("time ", current_time, "ms: Simulator ended for FCFS [Q: empty]", sep='')
 
 def main():
     #? Testing code
-    if (False):
-        print("Main start:")
-
         num_procs, seed_no, lambda_, upp_bound, cont_switch, alpha, t_slice  = int(sys.argv[1]), int(sys.argv[2]), float(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), float(sys.argv[6]), int(sys.argv[7])
         processes = ProcessSet(num_procs,lambda_,seed_no, upp_bound)
         processes.generate()
