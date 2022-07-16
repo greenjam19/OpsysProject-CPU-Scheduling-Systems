@@ -1,6 +1,7 @@
 import sys
 from copy import deepcopy 
 from ProcessSet import *
+import math
 
 def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
     """ 
@@ -43,20 +44,22 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
     # First print
     print("\ntime ", current_time, "ms: Simulator started for FCFS [Q: empty]", sep="")
-
+    #number of times a process underwent a context switch; needed for Stats()
+    FCFS_cont_switches = 0
+    #number of times a process underwent a context switch; needed for Stats()
+    FCFS_wait_times = [0]*num_procs
     # While loop keeps going until all processes done
     while (True):
         #!block all printing for any times of 1000ms or greater
-        if(current_time>999):
-            blockPrint()
         #* Check if anything in arr_time is still there, if so check if at or past that arrive time, print out from arr_time, and add to queue
         if (len(arr_time) != 0):
             for i in range(len(arr_time)):
                 if (current_time == arr_time[i]):
                     queue.append(chr(65 + i))
-                    print("time ", current_time, "ms: Process ", chr(65 + i), " arrived; added to ready queue [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    if current_time<1000:
+                        print("time ", current_time, "ms: Process ", chr(65 + i), " arrived; added to ready queue [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
                     # make integer division with //
                     wait_time = int(cont_switch_time / 2)
 
@@ -66,11 +69,15 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
             proc_idx = ord(current_proc) - 65
             queue.pop(0)
             if (len(queue) == 0):
-                print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
+                if current_time<1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
+                FCFS_cont_switches+=1
             else:
-                print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time<1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
+                FCFS_cont_switches+=1
             in_burst = True
             start_burst_time = current_time
 
@@ -88,18 +95,20 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
             if (len(CPU_bursts[proc_idx]) != 0):
                 wait_times[proc_idx] = int(cont_switch_time / 2) + current_time + IO_bursts[proc_idx][0]
                 if (len(queue) == 0):
-                    print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
-                    print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
+                    if current_time<1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
+                        print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
                 else:
-                    print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
-                    print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    if current_time<1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
+                        print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
             else:
                 #!enable printing for termination clauses
-                enablePrint()
+                
                 if (len(queue) == 0):
                     print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: empty]", sep='')
                 else:
@@ -107,7 +116,7 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
                     print(*queue, end='')
                     print("]")
                 #!reblock printing after termination clauses
-                blockPrint()
+                
                 completed_procs += 1
             wait_time_2 = cont_switch_time
 
@@ -115,9 +124,10 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
         for i in range(len(wait_times)):
             if (wait_times[i] == current_time):
                 queue.append(chr(65 + i))
-                print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time<1000:
+                    print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 wait_times[i] = -1
                 IO_bursts[i].pop(0)
                 wait_time_3 = int(cont_switch_time / 2)
@@ -137,12 +147,21 @@ def FCFS(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time):
 
         #* Increment the current_time at the end of the loop
         current_time += 1
+
+        #Increment wait_times corresponding to what's in queue
+        for i in range (len(queue)):
+            FCFS_wait_times[ord(queue[i])-65]+=1
         
 
     # Final print statement
     #!enable printing for Simulator ending clause
-    enablePrint()
     print("time ", current_time, "ms: Simulator ended for FCFS [Q: empty]", sep='')
+    FCFS_CPU_util = math.ceil(sum([sum(x) for x in CPU_bursts_p])*100000/current_time)/1000
+    avg = (sum(FCFS_wait_times) - (cont_switch_time//2)*FCFS_cont_switches)/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+    avg = math.ceil(avg*1000)/1000
+    avg_turnaround =  (sum(FCFS_wait_times) + (cont_switch_time//2)*FCFS_cont_switches)/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)])) + sum([sum(x) for x in CPU_bursts_p])/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+    avg_turnaround = math.ceil(avg_turnaround*1000)/1000
+    return FCFS_cont_switches, avg, FCFS_CPU_util, avg_turnaround
 
 def main():
     #? Testing code
@@ -152,5 +171,5 @@ def main():
         arr_time, CPU_bursts, IO_bursts, no_bursts = processes.print_()
         FCFS(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch)
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()

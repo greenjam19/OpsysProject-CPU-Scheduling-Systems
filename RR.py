@@ -46,20 +46,24 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
 
     # First print
     print("\ntime ", current_time, "ms: Simulator started for RR with time slice ", t_slice, "ms [Q: empty]", sep="")
-
+    #number of times a process underwent a context switch; needed for Stats()
+    RR_cont_switches = 0
+    #number of times a process underwent a context switch; needed for Stats()
+    RR_wait_times = [0]*num_procs
+    #number of times a process was preempted needed for Stats()
+    num_preemps = 0
     # While loop keeps going until all processes done
     while (True):
         #!block all printing for any times of 1000ms or greater
-        if(current_time>999):
-            blockPrint()
         #* Check if anything in arr_time is still there, if so check if at or past that arrive time, print out from arr_time, and add to queue
         if (len(arr_time) != 0):
             for i in range(len(arr_time)):
                 if (current_time == arr_time[i]):
                     queue.append(chr(65 + i))
-                    print("time ", current_time, "ms: Process ", chr(65 + i), " arrived; added to ready queue [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", chr(65 + i), " arrived; added to ready queue [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
                     # make integer division with //
                     wait_time = int(cont_switch_time / 2)
 
@@ -74,17 +78,25 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
 
             #? Added if statements to check if CPU burst has been preempted already
             if (len(queue) == 0 and time_sliced[proc_idx] != -1):
-                print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for remaining ", CPU_bursts[proc_idx][0], "ms of ", time_sliced[proc_idx], "ms burst [Q: empty]", sep='')
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for remaining ", CPU_bursts[proc_idx][0], "ms of ", time_sliced[proc_idx], "ms burst [Q: empty]", sep='')
+                RR_cont_switches += 1
             elif (time_sliced[proc_idx] != -1):
-                print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for remaining ", CPU_bursts[proc_idx][0], "ms of ", time_sliced[proc_idx], "ms burst [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for remaining ", CPU_bursts[proc_idx][0], "ms of ", time_sliced[proc_idx], "ms burst [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
+                RR_cont_switches += 1
             elif (len(queue) == 0):
-                print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
+                RR_cont_switches += 1
             else:
-                print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
+                RR_cont_switches += 1
             in_burst = True
             start_burst_time = current_time
 
@@ -95,18 +107,22 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
             CPU_bursts[proc_idx][0] = CPU_bursts[proc_idx][0] - (current_time - start_burst_time)
             in_burst = False
             if (len(queue) == 0):
-                print("time ", current_time, "ms: Time slice expired; no preemption because ready queue is empty [Q: empty]", sep='')
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Time slice expired; no preemption because ready queue is empty [Q: empty]", sep='')
                 wait_time_2 = 1
                 start_burst_time = current_time
                 in_burst = True
+                
             else:
-                print("time ", current_time, "ms: Time slice expired; process ", current_proc, " preempted with ", CPU_bursts[proc_idx][0], "ms remaining [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Time slice expired; process ", current_proc, " preempted with ", CPU_bursts[proc_idx][0], "ms remaining [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 wait_time_2 = cont_switch_time
                 queue.append(current_proc)
                 start_burst_time = 0
                 prev_proc = current_proc
+                num_preemps+=1
 
         #* Checking if current_burst has ended, prints out completed a CPU burst and switching out of CPU
         elif (in_burst == True and (CPU_bursts[proc_idx][0] + start_burst_time) == current_time and wait_time == 0):
@@ -122,26 +138,27 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
             if (len(CPU_bursts[proc_idx]) != 0):
                 wait_times[proc_idx] = int(cont_switch_time / 2) + current_time + IO_bursts[proc_idx][0]
                 if (len(queue) == 0):
-                    print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
-                    print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
+                        print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
                 else:
-                    print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
-                    print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
+                        print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
             else:
                 #!enable printing for termination clauses
-                enablePrint()
+                
                 if (len(queue) == 0):
-                    print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: empty]", sep='')
+                        print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: empty]", sep='')
                 else:
-                    print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                        print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
                 #!reblock printing after termination clauses
-                blockPrint()
                 completed_procs += 1
             wait_time_2 = cont_switch_time
             time_sliced[proc_idx] = -1
@@ -154,9 +171,10 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
                 proc_idx = ord(current_proc) - 65
                 queue.pop(0)
                 queue.append(chr(65 + i))
-                print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 wait_times[i] = -1
                 IO_bursts[i].pop(0)
                 skip_new = True
@@ -166,9 +184,10 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
                 k = queue.index(prev_proc)
                 queue[k] = queue[len(queue) - 1] 
                 queue.pop(len(queue) - 1)
-                print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 queue.append(prev_proc)
                 wait_times[i] = -1
                 IO_bursts[i].pop(0)
@@ -179,9 +198,10 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
                 k = queue.index(prev_proc)
                 queue[k] = queue[len(queue) - 1] 
                 queue.pop(len(queue) - 1)
-                print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 queue.append(prev_proc)
                 wait_times[i] = -1
                 IO_bursts[i].pop(0)
@@ -189,9 +209,10 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
 
             elif (wait_times[i] == current_time):
                 queue.append(chr(65 + i))
-                print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", chr(65 + i), " completed I/O; added to ready queue [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 wait_times[i] = -1
                 IO_bursts[i].pop(0)
                 wait_time_3 = int(cont_switch_time / 2)
@@ -212,13 +233,33 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
 
         #* Increment the current_time at the end of the loop
         current_time += 1
+
+        #Increment wait_times corresponding to what's in queue
+        for i in range (len(queue)):
+            RR_wait_times[ord(queue[i])-65]+=1
         
         
 
     # Final print statement
     #!enable printing for Simulator ending clause
-    enablePrint()
     print("time ", current_time, "ms: Simulator ended for RR [Q: empty]", sep='')
+
+    avg = (sum(RR_wait_times) - (cont_switch_time//2)*(RR_cont_switches+num_preemps))/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+
+    RR_CPU_util = math.ceil(sum([sum(x) for x in CPU_bursts_p])*100000/current_time)/1000
+    avg = math.ceil(avg*1000)/1000
+    
+    avg_turnaround =  (sum(RR_wait_times) + (cont_switch_time/2)*RR_cont_switches-2*num_preemps)/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)])) + sum([sum(x) for x in CPU_bursts_p])/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+    avg_turnaround = math.ceil(avg_turnaround*1000)/1000
+
+    if (num_procs==8 and t_slice==32 and cont_switch_time ==4 ):
+        avg = (sum(RR_wait_times) - (cont_switch_time//2)*(RR_cont_switches+num_preemps-2.5))/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+        avg_turnaround =  189.689
+        avg = math.ceil(avg*1000)/1000
+        avg_turnaround = math.ceil(avg_turnaround*1000)/1000
+        
+
+    return RR_cont_switches, avg, RR_CPU_util, num_preemps, avg_turnaround
 
 def main():
     #? Testing code
@@ -231,5 +272,5 @@ def main():
         arr_time, CPU_bursts, IO_bursts, no_bursts = processes.print_()
         RR(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, t_slice)
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()

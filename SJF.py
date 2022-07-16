@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 Created on Sun Jul 10 17:57:12 2022
-
-@author: greenj19
+@File   : SJF.py
+@Author : Jamarri Green (greenj19,greenjam19)
+@Course : CSCI-4210; Operating Systems
 """
 
 import sys
@@ -13,7 +13,7 @@ from math import ceil
 
 def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alpha_, tau_inits):
     """ 
-    Shortest Job First Algorithm
+    Shortest Job First Algorithm (SJF CPU Scheduling System)
     Args:
         num_procs (int): The number of processes
         arr_time_p (int[]): List of arrival times for every process
@@ -61,13 +61,13 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
     #name of what process is currently running "A,B,C,D, etc."
     runn_proc = ''
     #! *******************************************SPECIFIC TO SJF and SRT*****************************************END
-
+    #number of times a process underwent a context switch; needed for Stats()
+    SJF_cont_switches = 0
+    #number of times a process underwent a context switch; needed for Stats()
+    SJF_wait_times = [0]*num_procs
     # While loop keeps going until all processes done
-
     while (True):
         #!block all printing for any times of 1000ms or greater
-        if(current_time>999):
-            blockPrint()
         #* Check if anything in arr_time is still there, if so check if at or past that arrive time, print out from arr_time, and add to queue
         if (len(arr_time) != 0):
             for i in range(len(arr_time)):
@@ -88,10 +88,10 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
                         runn_proc = queue[0]
                         in_processor = True
     
-
-                    print("time ", current_time, "ms: Process ", chr(65 + i), " (tau ", tau[0], "ms)", " arrived; added to ready queue [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", chr(65 + i), " (tau ", tau[0], "ms)", " arrived; added to ready queue [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
                     wait_time = cont_switch_time //2
     #! *******************************************SPECIFIC TO SJF and SRT*****************************************END
 
@@ -121,15 +121,19 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
                     proc_idx = ord(runn_proc)-65 
                     
             if (len(queue) == 0):
-                print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: empty]", sep='')
                 runn_proc = current_proc
                 in_processor = True
+                SJF_cont_switches+=1
             else:
-                print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
-                print(*queue, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " started using the CPU for ", CPU_bursts[proc_idx][0], "ms burst [Q: ", sep='', end='')
+                    print(*queue, end='')
+                    print("]")
                 runn_proc = current_proc
                 in_processor = True
+                SJF_cont_switches+=1
     #! *******************************************SPECIFIC TO SJF and SRT*****************************************END
 
             in_burst = True
@@ -153,18 +157,19 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
                 wait_times[proc_idx] = int(cont_switch_time / 2) + current_time + IO_bursts[proc_idx][0]
                 if (len(queue) == 0):
     #! *******************************************SPECIFIC TO SJF and SRT*****************************************START
-                    print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
                     
                     #tau value recalculation, where t is the CPU burst of what's currently in the processor
                     prev_tau = tau[proc_idx]
                     tau[proc_idx] = ceil((alpha * t) + (1-alpha) * prev_tau)
                     tau_ = tau[proc_idx]
-                    
-                    print("time ", current_time, "ms: Recalculated tau for process ", current_proc, ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: empty]", sep='')
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Recalculated tau for process ", current_proc, ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: empty]", sep='')
     
 
-
-                    print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
 
                     #if queue is empty, processor logic should indicate such
                     runn_proc = ''
@@ -174,32 +179,35 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
             
     #! *******************************************SPECIFIC TO SJF and SRT*****************************************START
                 else:
-                    print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: "," ".join(queue),"]", sep='')
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(CPU_bursts[proc_idx]), " burst", plural, " to go [Q: "," ".join(queue),"]", sep='')
 
                     #tau value recalculation, where t is the CPU burst of what's currently in the processor
                     prev_tau = tau[proc_idx]
                     tau[proc_idx] = ceil((alpha * t) + (1-alpha) * prev_tau)
                     tau_ = tau[proc_idx]
-                    
-                    print("time ", current_time, "ms: Recalculated tau for process ", current_proc, ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: "," ".join(queue),"]", sep='')
-                    print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    if current_time < 1000:
+                        print("time ", current_time, "ms: Recalculated tau for process ", current_proc, ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: "," ".join(queue),"]", sep='')
+                        print("time ", current_time, "ms: Process ", current_proc, " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
 
                     #more processor logic indicating an idle processor
                     runn_proc = ''
                     in_processor = False
             else:
                 #!enable printing for termination clauses
-                enablePrint()
+                
                 if (len(queue) == 0):
-                    print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: empty]", sep='')
+                    
+                        print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: empty]", sep='')
                 else:
-                    print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
+                    
+                        print("time ", current_time, "ms: Process ", current_proc, " terminated [Q: ", sep='', end='')
+                        print(*queue, end='')
+                        print("]")
                 #!reblock printing after termination clauses
-                blockPrint()
+        
                 completed_procs += 1
             wait_time_2 = cont_switch_time
 #! *******************************************SPECIFIC TO SJF and SRT*****************************************END
@@ -229,9 +237,10 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
                     queue2.remove(runn_proc)
                 
                 #========(1)=========
-                print("time ", current_time, "ms: Process ", chr(65 + i), " (tau ", tau[i], "ms)", " completed I/O; added to ready queue [Q: ", sep='', end='')
-                print(*queue2, end='')
-                print("]")
+                if current_time < 1000:
+                    print("time ", current_time, "ms: Process ", chr(65 + i), " (tau ", tau[i], "ms)", " completed I/O; added to ready queue [Q: ", sep='', end='')
+                    print(*queue2, end='')
+                    print("]")
                 
                 #if the queue has one value and the processor is empty, make runn_proc that new value (in queue2 not queue since queue "could")
                 #have the prev runn_proc at index 0, which would cause redundant reassignment
@@ -261,12 +270,23 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
 
         #* Increment the current_time at the end of the loop
         current_time += 1
+
+        #Increment wait_times corresponding to what's in queue
+        for i in range (len(queue)):
+            SJF_wait_times[ord(queue[i])-65]+=1
         
 
     # Final print statement
     #!enable printing for Simulator ending clause
-    enablePrint()
     print("time ", current_time, "ms: Simulator ended for SJF [Q: empty]", sep='')
+
+    avg = (sum(SJF_wait_times) - (cont_switch_time//2)*SJF_cont_switches)/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+    SJF_CPU_util = math.ceil(sum([sum(x) for x in CPU_bursts_p])*100000/current_time)/1000
+    avg = math.ceil(avg*1000)/1000
+    avg_turnaround =  (sum(SJF_wait_times) + (cont_switch_time//2)*SJF_cont_switches)/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)])) + sum([sum(x) for x in CPU_bursts_p])/(sum([len(CPU_bursts_p[i]) for i in range(num_procs)]))
+    avg_turnaround = math.ceil(avg_turnaround*1000)/1000
+
+    return SJF_cont_switches, avg, SJF_CPU_util, avg_turnaround
 
 def main():
     #? Testing code
@@ -277,5 +297,5 @@ def main():
         tau_inits = [processes.get_tau() for i in range(num_procs)]
         SJF(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
