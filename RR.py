@@ -201,7 +201,7 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
                 IO_bursts[i].pop(0)
                 skip_new = True
             # ?
-            elif (wait_times[i] == current_time and in_burst == False and len(queue) != 0 and wait_time_2 == cont_switch_time - 1):
+            elif (wait_times[i] == current_time and in_burst == False and len(queue) != 0 and wait_time_2 == cont_switch_time - 1 and prev_proc in queue):
                 queue.append(chr(65 + i))
                 k = queue.index(prev_proc)
                 queue[k] = queue[len(queue) - 1]
@@ -216,7 +216,7 @@ def RR(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, t_sli
                 IO_bursts[i].pop(0)
                 wait_time_3 = int(cont_switch_time / 2)
 
-            elif (wait_times[i] == current_time and in_burst == False and len(queue) > 1 and wait_time_2 == cont_switch_time):
+            elif (wait_times[i] == current_time and in_burst == False and len(queue) > 1 and wait_time_2 == cont_switch_time and prev_proc in queue):
                 queue.append(chr(65 + i))
                 k = queue.index(prev_proc)
                 queue[k] = queue[len(queue) - 1]

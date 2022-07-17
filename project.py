@@ -4,14 +4,28 @@ from FCFS import FCFS
 from SJF import SJF
 from RR import RR
 from SRT import SRT
-from Stats import Stats
+from Stats import *
 import sys
 print = functools.partial(print, flush=True)
 
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
 def main():
-        if len(sys.argv) < 8 or int(sys.argv[1]) < 1 or float(sys.argv[3])==0:
-                sys.stderr.write("ERROR: Invalid argument\n")
+        if len(sys.argv)<8:
+                stats()
+                sys.stderr.write("ERROR: Invalid arguments\n")
                 sys.exit(2)
+        elif not sys.argv[1].isdigit() or not sys.argv[2].isdigit() or not isfloat(sys.argv[3]) \
+        or not sys.argv[4].isdigit() or not sys.argv[5].isdigit() or not isfloat(sys.argv[6]) \
+        or not sys.argv[7].isdigit():
+                stats()
+                sys.stderr.write("ERROR: Invalid arguments\n")
+                sys.exit(2)
+
         num_procs= int(sys.argv[1])
         seed_no = int(sys.argv[2])
         lambda_ = float(sys.argv[3])
@@ -19,6 +33,12 @@ def main():
         cont_switch = int(sys.argv[5])
         alpha = float(sys.argv[6])
         t_slice  = int(sys.argv[7])
+
+        invalid_vals = num_procs<1 or num_procs>26 or lambda_==0
+        if invalid_vals:
+                stats()
+                sys.stderr.write("ERROR: Invalid argument\n")
+                sys.exit(2)
         
         processes = ProcessSet(num_procs,lambda_,seed_no, upp_bound)
         processes.generate()
