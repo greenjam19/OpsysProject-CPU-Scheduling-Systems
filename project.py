@@ -34,7 +34,7 @@ def main():
         alpha = float(sys.argv[6])
         t_slice  = int(sys.argv[7])
 
-        invalid_vals = num_procs<1 or num_procs>26 or lambda_==0
+        invalid_vals = num_procs<1 or num_procs>26 or seed_no < 0 or lambda_ <= 0 or upp_bound < 0 or cont_switch % 2 != 0 or cont_switch <= 0 or alpha < 0 or t_slice<0
         if invalid_vals:
                 stats()
                 sys.stderr.write("ERROR: Invalid argument\n")
@@ -46,10 +46,14 @@ def main():
         tau_inits = [processes.get_tau() for i in range(num_procs)]
         sys_avg_CPU_burst_time = processes.get_avg_Burst_time()
 
-        FCFS_cont_switches,FCFS_avg_wait_time, FCFS_CPU_util, FCFS_avg_turnaround               = FCFS(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch)
-        SJF_cont_switches, SJF_avg_wait_time, SJF_CPU_util, SJF_avg_turnaround                  = SJF(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
-        SRT_cont_switches, SRT_avg_wait_time, SRT_CPU_util, SRT_num_preemps, SRT_avg_turnaround = SRT(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
-        RR_cont_switches, RR_avg_wait_time, RR_CPU_util, RR_num_preemps, RR_avg_turnaround      = RR(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, t_slice)
+        try: 
+                FCFS_cont_switches,FCFS_avg_wait_time, FCFS_CPU_util, FCFS_avg_turnaround               = FCFS(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch)
+                SJF_cont_switches, SJF_avg_wait_time, SJF_CPU_util, SJF_avg_turnaround                  = SJF(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
+                SRT_cont_switches, SRT_avg_wait_time, SRT_CPU_util, SRT_num_preemps, SRT_avg_turnaround = SRT(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, alpha, tau_inits)
+                RR_cont_switches, RR_avg_wait_time, RR_CPU_util, RR_num_preemps, RR_avg_turnaround      = RR(num_procs, arr_time, CPU_bursts, IO_bursts, cont_switch, t_slice)
+        except:
+                stats()
+                sys.exit(1)
 
         sys_cont_switches = [FCFS_cont_switches,SJF_cont_switches,SRT_cont_switches,RR_cont_switches]
         sys_avg_wait_times = [FCFS_avg_wait_time,SJF_avg_wait_time,SRT_avg_wait_time,RR_avg_wait_time]

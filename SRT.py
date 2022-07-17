@@ -284,6 +284,9 @@ def SRT(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
         if (current_time - start_burst_time > 1000000):
             completed_procs += 1
             wait_time_2 = cont_switch_time
+            
+        if (current_time == 10000000):
+            break
 
         if ((current_time == arrival_check) and len(queue) != 0 and num_procs == 8):
             num_preemps += 1
