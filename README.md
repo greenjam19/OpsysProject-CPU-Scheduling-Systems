@@ -53,6 +53,13 @@ Run the `project.py` with the following command line arguments after it:
 Example usage:
 ```python3 project.py 2 19 0.01 4096 4 0.5 64```
 
+After running, a file named `simout.txt` will be created that contains statistics for each simulated algorithm.
+An example of this would be:
+<p align="center">
+    <img style="border-radius: 20px" src="./img/output.svg" alt="Conceptual Design">
+</p>
+
+
 
 ## Authors
 
