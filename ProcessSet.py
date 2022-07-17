@@ -1,6 +1,7 @@
 import math
 import sys
 
+
 class Rand48(object):
     def __init__(self, seed):
         self.n = seed
@@ -94,8 +95,14 @@ class ProcessSet(object):
     #May be needed for "something"
     def set_tau(self, val):
         self.tau = val
+    #return averag CPU burst time for, static for ALL scheduling systems 
+    #rounded up to 3 decimal places
+    def get_avg_Burst_time(self):
+        return math.ceil(sum([sum(x) for x in self.CPU_bursts])/sum(self.no_bursts)*1000)/1000
+    
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+    """
     "Tester code"
     numProc      = int(sys.argv[1])   # Number of processes 
     seed_no      =  int(sys.argv[2])  # random seed number for Rand48
@@ -112,3 +119,4 @@ if __name__ == "__main__":
     print("lists of CPU bursts:",CPU_bursts)
     print("lists of I/O bursts:",IO_bursts)
     print("list of amounts of CPU bursts:",no_bursts)
+    """
