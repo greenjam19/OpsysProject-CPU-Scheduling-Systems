@@ -216,6 +216,10 @@ def SJF(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
 
         # number of times something reached I/O burst time_stamp
         num_timeouts = 0
+        
+        if (current_time - start_burst_time > 3000000):
+            completed_procs += 1
+            wait_time_2 = cont_switch_time
 
         # * Check if anything in wait times is the current time, if so print out I/O burst completecd and add proccess to queue (if CPU burst has stuff still)
         for i in range(len(wait_times)):

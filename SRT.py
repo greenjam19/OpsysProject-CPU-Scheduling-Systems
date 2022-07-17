@@ -202,80 +202,80 @@ def SRT(num_procs, arr_time_p, CPU_bursts_p, IO_bursts_p, cont_switch_time, alph
             start_burst_time = current_time
 
         # * Checking if current_burst has ended, prints out completed a CPU burst and switching out of CPU
-        elif (in_burst == True and (CPU_bursts[proc_idx][0] + start_burst_time) == current_time and wait_time == 0):
+        elif (in_burst == True and len(CPU_bursts[proc_idx]) != 0 and wait_time == 0):
             # t is the CPU burst of what's currently in the processor
+            if ((CPU_bursts[proc_idx][0] + start_burst_time) == current_time):
+                t = CPU_bursts[proc_idx][0]
+                CPU_bursts[proc_idx].pop(0)
+                in_burst = False
 
-            t = CPU_bursts[proc_idx][0]
-            CPU_bursts[proc_idx].pop(0)
-            in_burst = False
+                if (preempt_times[proc_idx] != -1):
+                    t = preempt_times[proc_idx]
 
-            if (preempt_times[proc_idx] != -1):
-                t = preempt_times[proc_idx]
+                # Checking if we need to print a plural 'burst(s)'
+                plural = 's'
+                if (len(CPU_bursts[proc_idx]) == 1):
+                    plural = ''
 
-            # Checking if we need to print a plural 'burst(s)'
-            plural = 's'
-            if (len(CPU_bursts[proc_idx]) == 1):
-                plural = ''
+                # * If there is CPU bursts left in the process
+                if (len(CPU_bursts[proc_idx]) != 0):
+                    wait_times[proc_idx] = int(
+                        cont_switch_time / 2) + current_time + IO_bursts[proc_idx][0]
+                    if (len(queue) == 0):
+                        if current_time < 1000:
+                            print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(
+                                CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
 
-            # * If there is CPU bursts left in the process
-            if (len(CPU_bursts[proc_idx]) != 0):
-                wait_times[proc_idx] = int(
-                    cont_switch_time / 2) + current_time + IO_bursts[proc_idx][0]
-                if (len(queue) == 0):
-                    if current_time < 1000:
-                        print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(
-                            CPU_bursts[proc_idx]), " burst", plural, " to go [Q: empty]", sep='')
+                        # tau value recalculation, where t is the CPU burst of what's currently in the processor
+                        prev_tau = tau[proc_idx]
+                        tau[proc_idx] = ceil((alpha * t) + (1-alpha) * prev_tau)
+                        tau_ = tau[proc_idx]
+                        if current_time < 1000:
+                            print("time ", current_time, "ms: Recalculated tau for process ", current_proc,
+                                ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: empty]", sep='')
+                            print("time ", current_time, "ms: Process ", current_proc,
+                                " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
 
-                    # tau value recalculation, where t is the CPU burst of what's currently in the processor
-                    prev_tau = tau[proc_idx]
-                    tau[proc_idx] = ceil((alpha * t) + (1-alpha) * prev_tau)
-                    tau_ = tau[proc_idx]
-                    if current_time < 1000:
-                        print("time ", current_time, "ms: Recalculated tau for process ", current_proc,
-                              ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: empty]", sep='')
-                        print("time ", current_time, "ms: Process ", current_proc,
-                              " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: empty]", sep='')
+                        # if queue is empty, processor logic should indicate such
+                        runn_proc = ''
+                        in_processor = False
+                    else:
+                        if current_time < 1000:
+                            print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(
+                                CPU_bursts[proc_idx]), " burst", plural, " to go [Q: ", " ".join(queue), "]", sep='')
 
-                    # if queue is empty, processor logic should indicate such
-                    runn_proc = ''
-                    in_processor = False
+                        # tau value recalculation, where t is the CPU burst of what's currently in the processor
+                        prev_tau = tau[proc_idx]
+                        tau[proc_idx] = ceil((alpha * t) + (1-alpha) * prev_tau)
+                        tau_ = tau[proc_idx]
+                        if current_time < 1000:
+                            print("time ", current_time, "ms: Recalculated tau for process ", current_proc,
+                                ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: ", " ".join(queue), "]", sep='')
+                            print("time ", current_time, "ms: Process ", current_proc,
+                                " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
+                            print(*queue, end='')
+                            print("]")
+
+                        # More processor logic indicating an idle processor
+                        runn_proc = ''
+                        in_processor = False
                 else:
-                    if current_time < 1000:
-                        print("time ", current_time, "ms: Process ", current_proc, " (tau ", tau[proc_idx], "ms)", " completed a CPU burst; ", len(
-                            CPU_bursts[proc_idx]), " burst", plural, " to go [Q: ", " ".join(queue), "]", sep='')
+                    #!enable printing for termination clauses
 
-                    # tau value recalculation, where t is the CPU burst of what's currently in the processor
-                    prev_tau = tau[proc_idx]
-                    tau[proc_idx] = ceil((alpha * t) + (1-alpha) * prev_tau)
-                    tau_ = tau[proc_idx]
-                    if current_time < 1000:
-                        print("time ", current_time, "ms: Recalculated tau for process ", current_proc,
-                              ": old tau ", prev_tau, "ms; new tau ", tau_, "ms [Q: ", " ".join(queue), "]", sep='')
-                        print("time ", current_time, "ms: Process ", current_proc,
-                              " switching out of CPU; will block on I/O until time ", wait_times[proc_idx], "ms [Q: ", sep='', end='')
+                    if (len(queue) == 0):
+                        print("time ", current_time, "ms: Process ",
+                            current_proc, " terminated [Q: empty]", sep='')
+                    else:
+                        print("time ", current_time, "ms: Process ",
+                            current_proc, " terminated [Q: ", sep='', end='')
                         print(*queue, end='')
                         print("]")
+                    #!reblock printing after termination clauses
 
-                    # More processor logic indicating an idle processor
-                    runn_proc = ''
-                    in_processor = False
-            else:
-                #!enable printing for termination clauses
-
-                if (len(queue) == 0):
-                    print("time ", current_time, "ms: Process ",
-                          current_proc, " terminated [Q: empty]", sep='')
-                else:
-                    print("time ", current_time, "ms: Process ",
-                          current_proc, " terminated [Q: ", sep='', end='')
-                    print(*queue, end='')
-                    print("]")
-                #!reblock printing after termination clauses
-
-                completed_procs += 1
-            wait_time_2 = cont_switch_time
-            preempt_times[proc_idx] = -1
-            times_left[proc_idx] = 99999999999
+                    completed_procs += 1
+                wait_time_2 = cont_switch_time
+                preempt_times[proc_idx] = -1
+                times_left[proc_idx] = 99999999999
 
         # Number of times something reached I/O burst time_stamp
         num_timeouts = 0
