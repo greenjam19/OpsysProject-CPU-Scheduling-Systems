@@ -3,9 +3,7 @@ from ProcessSet import *
 from FCFS import FCFS
 from SJF import SJF
 from RR import RR
-#TODO finish this
-from SRT2 import SRT
-#TODO finish this
+from SRT import SRT
 from Stats import Stats
 import sys
 print = functools.partial(print, flush=True)

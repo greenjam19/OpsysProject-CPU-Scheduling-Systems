@@ -3,6 +3,6 @@ for the number of processes, lambda, and random seed number (DONE)
 
 - Build function for simulating FCFS (DONE)
 - Build function for simulating SJF (DONE)
-- Build function for simulating SRT (IN PROGRESS)
+- Build function for simulating SRT (DONE)
 - Build function for simulating RR (DONE)
-- build function for formatting FINAL output (IN PROGRESS)
+- Build function for formatting FINAL output (DONE)

@@ -1,0 +1,81 @@
+Process A: arrival time 33ms; tau 100ms; 14 CPU bursts:
+--> CPU burst 207ms --> I/O burst 340ms
+--> CPU burst 105ms --> I/O burst 120ms
+--> CPU burst 226ms --> I/O burst 1720ms
+--> CPU burst 64ms --> I/O burst 610ms
+--> CPU burst 44ms --> I/O burst 650ms
+--> CPU burst 110ms --> I/O burst 630ms
+--> CPU burst 4ms --> I/O burst 70ms
+--> CPU burst 11ms --> I/O burst 290ms
+--> CPU burst 82ms --> I/O burst 1750ms
+--> CPU burst 49ms --> I/O burst 3580ms
+--> CPU burst 117ms --> I/O burst 160ms
+--> CPU burst 73ms --> I/O burst 1600ms
+--> CPU burst 117ms --> I/O burst 1070ms
+--> CPU burst 69ms
+
+time 0ms: Simulator started for FCFS [Q: empty]
+time 33ms: Process A arrived; added to ready queue [Q: A]
+time 35ms: Process A started using the CPU for 207ms burst [Q: empty]
+time 242ms: Process A completed a CPU burst; 13 bursts to go [Q: empty]
+time 242ms: Process A switching out of CPU; will block on I/O until time 584ms [Q: empty]
+time 584ms: Process A completed I/O; added to ready queue [Q: A]
+time 586ms: Process A started using the CPU for 105ms burst [Q: empty]
+time 691ms: Process A completed a CPU burst; 12 bursts to go [Q: empty]
+time 691ms: Process A switching out of CPU; will block on I/O until time 813ms [Q: empty]
+time 813ms: Process A completed I/O; added to ready queue [Q: A]
+time 815ms: Process A started using the CPU for 226ms burst [Q: empty]
+time 13955ms: Process A terminated [Q: empty]
+time 13957ms: Simulator ended for FCFS [Q: empty]
+
+time 0ms: Simulator started for SJF [Q: empty]
+time 33ms: Process A (tau 100ms) arrived; added to ready queue [Q: A]
+time 35ms: Process A (tau 100ms) started using the CPU for 207ms burst [Q: empty]
+time 242ms: Process A (tau 100ms) completed a CPU burst; 13 bursts to go [Q: empty]
+time 242ms: Recalculated tau for process A: old tau 100ms; new tau 154ms [Q: empty]
+time 242ms: Process A switching out of CPU; will block on I/O until time 584ms [Q: empty]
+time 584ms: Process A (tau 154ms) completed I/O; added to ready queue [Q: A]
+time 586ms: Process A (tau 154ms) started using the CPU for 105ms burst [Q: empty]
+time 691ms: Process A (tau 154ms) completed a CPU burst; 12 bursts to go [Q: empty]
+time 691ms: Recalculated tau for process A: old tau 154ms; new tau 130ms [Q: empty]
+time 691ms: Process A switching out of CPU; will block on I/O until time 813ms [Q: empty]
+time 813ms: Process A (tau 130ms) completed I/O; added to ready queue [Q: A]
+time 815ms: Process A (tau 130ms) started using the CPU for 226ms burst [Q: empty]
+time 13955ms: Process A terminated [Q: empty]
+time 13957ms: Simulator ended for SJF [Q: empty]
+
+time 0ms: Simulator started for SRT [Q: empty]
+time 33ms: Process A (tau 100ms) arrived; added to ready queue [Q: A]
+time 35ms: Process A (tau 100ms) started using the CPU for 207ms burst [Q: empty]
+time 242ms: Process A (tau 100ms) completed a CPU burst; 13 bursts to go [Q: empty]
+time 242ms: Recalculated tau for process A: old tau 100ms; new tau 154ms [Q: empty]
+time 242ms: Process A switching out of CPU; will block on I/O until time 584ms [Q: empty]
+time 584ms: Process A (tau 154ms) completed I/O; added to ready queue [Q: A]
+time 586ms: Process A (tau 154ms) started using the CPU for 105ms burst [Q: empty]
+time 691ms: Process A (tau 154ms) completed a CPU burst; 12 bursts to go [Q: empty]
+time 691ms: Recalculated tau for process A: old tau 154ms; new tau 130ms [Q: empty]
+time 691ms: Process A switching out of CPU; will block on I/O until time 813ms [Q: empty]
+time 813ms: Process A (tau 130ms) completed I/O; added to ready queue [Q: A]
+time 815ms: Process A (tau 130ms) started using the CPU for 226ms burst [Q: empty]
+time 13955ms: Process A terminated [Q: empty]
+time 13957ms: Simulator ended for SRT [Q: empty]
+
+time 0ms: Simulator started for RR with time slice 64ms [Q: empty]
+time 33ms: Process A arrived; added to ready queue [Q: A]
+time 35ms: Process A started using the CPU for 207ms burst [Q: empty]
+time 99ms: Time slice expired; no preemption because ready queue is empty [Q: empty]
+time 163ms: Time slice expired; no preemption because ready queue is empty [Q: empty]
+time 227ms: Time slice expired; no preemption because ready queue is empty [Q: empty]
+time 242ms: Process A completed a CPU burst; 13 bursts to go [Q: empty]
+time 242ms: Process A switching out of CPU; will block on I/O until time 584ms [Q: empty]
+time 584ms: Process A completed I/O; added to ready queue [Q: A]
+time 586ms: Process A started using the CPU for 105ms burst [Q: empty]
+time 650ms: Time slice expired; no preemption because ready queue is empty [Q: empty]
+time 691ms: Process A completed a CPU burst; 12 bursts to go [Q: empty]
+time 691ms: Process A switching out of CPU; will block on I/O until time 813ms [Q: empty]
+time 813ms: Process A completed I/O; added to ready queue [Q: A]
+time 815ms: Process A started using the CPU for 226ms burst [Q: empty]
+time 879ms: Time slice expired; no preemption because ready queue is empty [Q: empty]
+time 943ms: Time slice expired; no preemption because ready queue is empty [Q: empty]
+time 13955ms: Process A terminated [Q: empty]
+time 13957ms: Simulator ended for RR [Q: empty]
